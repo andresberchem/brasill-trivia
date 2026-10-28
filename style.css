@@ -93,3 +93,10 @@ footer{text-align:center;font-size:1.8rem;padding:10px 16px 40px;letter-spacing:
 @media(min-width:900px){.layout-wrapper{grid-template-columns:1fr}.ranking-column{position:static}}
 .live-ranking-section{max-height:none}
 .media{margin-top:16px;animation:slide .4s}
+
+/* ===== Pestaña QR ===== */
+.tabs{flex-wrap:wrap;justify-content:center}
+#qr{text-align:center}
+#qrbox{display:inline-block;padding:16px;background:#fff;border-radius:20px;border:4px solid var(--gold);box-shadow:0 14px 30px -14px rgba(0,0,0,.5);margin:14px 0}
+#qrbox img,#qrbox canvas{display:block}
+#qrurl{word-break:break-all;color:var(--blue);font-weight:600;margin:0 0 8px}

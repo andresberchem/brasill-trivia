@@ -24,7 +24,7 @@ try {
 } catch (e) { console.error("Firebase error:", e); }
 
 const $ = id => document.getElementById(id);
-const show = id => ["start","quiz","end","admin","rank"].forEach(s => $(s).classList.toggle("hidden", s !== id));
+const show = id => ["start","quiz","end","admin","rank","qr"].forEach(s => $(s).classList.toggle("hidden", s !== id));
 const mine = JSON.parse(localStorage.getItem("mine") || "[]");
 let Q = [], i = 0, score = 0, hits = 0, locked = false, tid = null, left = 0, streak = 0, fifty = 1, plus = 1, skip = 1, extra = 0, maxStreak = 0, cs = {}, CUSTOM = [], lastSnap = null;
 
@@ -311,6 +311,19 @@ $("nav-admin").onclick = () => { if (!adminOk) { if (prompt("Admin PIN:") !== PI
 $("nav-play").onclick = () => { clearInterval(tid); show("start"); };
 $("nav-rank").onclick = () => { clearInterval(tid); show("rank"); };
 $("see-rank").onclick = () => show("rank");
+$("nav-qr").onclick = () => {
+  clearInterval(tid); show("qr");
+  const url = location.href.split("#")[0].split("?")[0], box = $("qrbox");
+  box.innerHTML = ""; $("qrurl").textContent = url;
+  if (window.QRCode) new QRCode(box, {text: url, width: 240, height: 240, colorDark: "#06182b", colorLight: "#ffffff", correctLevel: QRCode.CorrectLevel.H});
+};
+$("qr-dl").onclick = () => {
+  const c = $("qrbox").querySelector("canvas"); if (!c) return;
+  const a = document.createElement("a"); a.href = c.toDataURL("image/png"); a.download = "brasil-trivia-qr.png"; a.click();
+};
+$("qr-copy").onclick = () => navigator.clipboard.writeText($("qrurl").textContent).then(() => {
+  $("qr-copy").textContent = "✅ Copied"; setTimeout(() => $("qr-copy").textContent = "🔗 Copy link", 1500);
+});
 
 $("plus").onclick = () => { if (!plus || locked || !+$("time").value) return; plus--; extra += 10; $("plus").disabled = true; };
 $("skip").onclick = () => { if (!skip || locked) return; skip--; clearInterval(tid); i++; i < Q.length ? render() : finish(); };

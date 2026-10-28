@@ -20,7 +20,7 @@
     Brasil Trivia
   </h1>
   <p id="tagline">Test what you know about Brazil</p>
-  <nav class="tabs"><button id="nav-play" class="ghost">🎮 Play</button><button id="nav-rank" class="ghost">🏆 Ranking</button><button id="nav-admin" class="ghost">🛠️ Admin</button><button id="mute" class="ghost">🔊</button></nav>
+  <nav class="tabs"><button id="nav-play" class="ghost">🎮 Play</button><button id="nav-rank" class="ghost">🏆 Ranking</button><button id="nav-qr" class="ghost">📱 QR</button><button id="nav-admin" class="ghost">🛠️ Admin</button><button id="mute" class="ghost">🔊</button></nav>
   <div class="wave"></div>
 </header>
 
@@ -114,6 +114,13 @@
       <button id="next" class="big hidden">Next</button>
     </section>
 
+    <section id="qr" class="panel hidden">
+      <h3>📱 Scan to play · Escanea para jugar · Escaneie para jogar</h3>
+      <div id="qrbox"></div>
+      <p id="qrurl"></p>
+      <div class="actions" style="justify-content:center"><button id="qr-dl" class="ghost">⬇️ PNG</button><button id="qr-copy" class="ghost">🔗 Copy link</button></div>
+    </section>
+
     <section id="admin" class="panel hidden">
       <h3>🛠️ Question manager (Firestore)</h3>
       <div class="form">
@@ -151,6 +158,7 @@
 
 <footer>🌴 🥁 🦜 ⚽ 🌴<br><small style="font-size:.7rem;letter-spacing:0;font-family:Nunito,sans-serif">Images · Wikipedia / Wikimedia Commons</small></footer>
 <noscript>This game needs JavaScript enabled.</noscript>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script type="module" src="app.js"></script>
 </body>
 </html>
