@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Brasil Trivia</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,800&family=Inter:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <h1>
+    <svg class="flag" viewBox="0 0 70 50" aria-hidden="true">
+      <rect width="70" height="50" rx="4" fill="#009C3B"/>
+      <polygon points="35,6 64,25 35,44 6,25" fill="#FFDF00"/>
+      <circle cx="35" cy="25" r="10" fill="#002776"/>
+      <path d="M26 23 Q35 20 44 27" stroke="#fff" stroke-width="2" fill="none"/>
+    </svg>
+    Brasil Trivia
+  </h1>
+  <p id="tagline">Test what you know about Brazil</p>
+  <nav class="tabs"><button id="nav-play" class="ghost">🎮 Play</button><button id="nav-admin" class="ghost">🛠️ Admin</button><button id="mute" class="ghost">🔊</button></nav>
+  <div class="wave"></div>
+</header>
+
+<!-- Contenedor principal de 2 columnas -->
+<main class="layout-wrapper">
+  
+  <!-- COLUMNA IZQUIERDA: Juego -->
+  <div class="game-column">
+    <section id="start" class="panel">
+      <label><span id="lbl-name">Name</span>
+        <input id="name" maxlength="20" placeholder="Ana">
+      </label>
+
+      <label><span id="lbl-program">🎓 Training Program</span>
+        <input id="program" maxlength="30" placeholder="Ej: ADSO, Enfermería...">
+      </label>
+
+      <label><span id="lbl-ui">🌐 Interface language</span>
+        <select id="ui">
+          <option value="en" selected>English</option>
+          <option value="es">Español</option>
+          <option value="pt">Português</option>
+        </select>
+      </label>
+
+      <label><span id="lbl-voice">🔊 Voice language</span>
+        <select id="voice">
+          <option value="en" selected>English</option>
+          <option value="es">Español</option>
+          <option value="pt">Português</option>
+          <option value="off">Off</option>
+        </select>
+      </label>
+
+      <label><span id="lbl-count">Questions</span>
+        <select id="n">
+          <option value="10">10</option>
+          <option value="15">15</option>
+          <option value="25">25</option>
+          <option value="50">50</option>
+        </select>
+      </label>
+
+      <label><span id="lbl-cat">Topic</span>
+        <select id="cat">
+          <option value="all" id="opt-all">All</option>
+          <option value="geo" id="opt-geo">Geography &amp; nature</option>
+          <option value="culture" id="opt-culture">Culture &amp; food</option>
+          <option value="sports" id="opt-sports">Sports</option>
+          <option value="history" id="opt-history">History</option>
+        </select>
+      </label>
+
+      <label><span>🎚️ Level / Nivel / Nível</span>
+        <select id="lvl"><option value="all">All / Todos / Todos</option><option value="easy">🟢 Easy / Fácil / Fácil</option><option value="medium">🟡 Medium / Medio / Médio</option><option value="hard">🔴 Hard / Difícil / Difícil</option></select>
+      </label>
+
+      <label><span id="lbl-timer">⏱️ Timer</span>
+        <select id="time">
+          <option value="0" id="opt-time-off">Off</option>
+          <option value="15">15 s</option>
+          <option value="20" selected>20 s</option>
+          <option value="30">30 s</option>
+        </select>
+      </label>
+
+      <button id="go" class="big">Play</button>
+    </section>
+
+    <section id="quiz" class="panel hidden">
+      <div class="bar"><span id="prog"></span><span id="tnum"></span><span id="streak"></span><span id="score"></span></div>
+      <div class="timer"><div id="tbar"></div></div>
+      
+      <div class="media"><img id="img" alt=""><div id="emo"></div></div>
+      <h2 id="q"></h2>
+      <p id="qtr" class="tr"></p>
+      
+      <div id="lang-switch" class="hidden" style="margin: 10px 0; padding: 10px; background: rgba(0,0,0,0.05); border-radius: 8px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+        <span style="font-weight: 800; font-size: 0.9rem;">Switch language:</span>
+        <select id="quiz-voice" style="width: auto; margin: 0; padding: 5px 10px;">
+          <option value="en">🇺🇸 English</option>
+          <option value="es">🇪🇸 Español</option>
+          <option value="pt">🇧🇷 Português</option>
+        </select>
+      </div>
+
+      <div class="actions"><button id="say" class="ghost">🔊 Listen</button><button id="fifty" class="ghost">✂️ 50/50</button><button id="plus" class="ghost">⏱️ +10s</button><button id="skip" class="ghost">⏭️ Skip</button></div>
+      <div id="opts"></div>
+      <div id="fb" class="hidden"></div>
+      <button id="next" class="big hidden">Next</button>
+    </section>
+
+    <section id="admin" class="panel hidden">
+      <h3>🛠️ Question manager (Firestore)</h3>
+      <div class="form">
+        <input id="a-q" placeholder="Question (English)"><input id="a-es" placeholder="Pregunta (Español)"><input id="a-pt" placeholder="Pergunta (Português)">
+        <textarea id="a-opts" rows="4" placeholder="One option per line: English|Español|Português"></textarea>
+        <select id="a-ans"><option value="0">Correct: line 1</option><option value="1">Correct: line 2</option><option value="2">Correct: line 3</option><option value="3">Correct: line 4</option></select>
+        <select id="a-c"><option value="geo">Geography</option><option value="culture">Culture</option><option value="sports">Sports</option><option value="history">History</option></select><select id="a-d"><option value="easy">🟢 Easy</option><option value="medium">🟡 Medium</option><option value="hard">🔴 Hard</option></select>
+        <input id="a-w" placeholder="Wikipedia article for the photo (e.g. Pelé)">
+        <input id="a-x0" placeholder="Feedback EN"><input id="a-x1" placeholder="Feedback ES"><input id="a-x2" placeholder="Feedback PT">
+        <button id="a-save" class="big">💾 Save</button><button id="a-cancel" class="ghost hidden">Cancel</button>
+      </div>
+      <h4 id="a-count"></h4><ul id="a-list"></ul>
+    </section>
+
+    <section id="end" class="panel hidden">
+      <h2 id="res"></h2>
+      <p id="sub"></p>
+      <div id="ach" class="chips"></div>
+      <button id="again" class="big">Play again</button>
+    </section>
+  </div>
+
+  <!-- COLUMNA DERECHA: Ranking -->
+  <div class="ranking-column">
+    <section class="panel live-ranking-section">
+      <h3 id="lbl-rank">🏆 Live ranking</h3>
+      <select id="rankfilter"><option value="">🎓 All</option></select>
+      <p id="rankmsg" class="tr"></p>
+      <ol id="list"></ol>
+    </section>
+  </div>
+
+</main>
+
+<footer>🌴 🥁 🦜 ⚽ 🌴<br><small style="font-size:.7rem;letter-spacing:0;font-family:Nunito,sans-serif">Images · Wikipedia / Wikimedia Commons</small></footer>
+<noscript>This game needs JavaScript enabled.</noscript>
+<script type="module" src="app.js"></script>
+</body>
+</html>
