@@ -24,7 +24,7 @@ try {
 } catch (e) { console.error("Firebase error:", e); }
 
 const $ = id => document.getElementById(id);
-const show = id => ["start","quiz","end","admin"].forEach(s => $(s).classList.toggle("hidden", s !== id));
+const show = id => ["start","quiz","end","admin","rank"].forEach(s => $(s).classList.toggle("hidden", s !== id));
 const mine = JSON.parse(localStorage.getItem("mine") || "[]");
 let Q = [], i = 0, score = 0, hits = 0, locked = false, tid = null, left = 0, streak = 0, fifty = 1, plus = 1, skip = 1, extra = 0, maxStreak = 0, cs = {}, CUSTOM = [], lastSnap = null;
 
@@ -205,6 +205,7 @@ function render() {
   im.onerror = () => { im.hidden = true; im.removeAttribute("src"); };
   im.onload = () => { im.hidden = false; };
   im.hidden = true; im.removeAttribute("src");
+  im.parentElement.classList.add("hidden"); // la foto se muestra solo después de responder
   im.parentElement.style.removeProperty("--bg"); $("emo").style.visibility = "";
   wikiImage(q.w).then(u => {
     if (Q[i] === q && u) {
@@ -308,6 +309,8 @@ $("mute").onclick = () => { muted = !muted; localStorage.setItem("mute", muted ?
 const PIN = "sena2026"; let adminOk = false;
 $("nav-admin").onclick = () => { if (!adminOk) { if (prompt("Admin PIN:") !== PIN) return; adminOk = true; } clearInterval(tid); show("admin"); };
 $("nav-play").onclick = () => { clearInterval(tid); show("start"); };
+$("nav-rank").onclick = () => { clearInterval(tid); show("rank"); };
+$("see-rank").onclick = () => show("rank");
 
 $("plus").onclick = () => { if (!plus || locked || !+$("time").value) return; plus--; extra += 10; $("plus").disabled = true; };
 $("skip").onclick = () => { if (!skip || locked) return; skip--; clearInterval(tid); i++; i < Q.length ? render() : finish(); };
@@ -348,6 +351,8 @@ function answer(n, btn) {
   else { streak = 0; sfx.bad(); if (btn) btn.classList.add("wrong"); }
   $("score").textContent = `⭐ ${score}`;
   $("streak").textContent = streak > 1 ? `🔥 x${streak}` : ""; popScore();
+  $("img").parentElement.classList.remove("hidden");
+  setTimeout(() => $("next").scrollIntoView({behavior: "smooth", block: "nearest"}), 150);
 
   fb.className = good ? "good" : "bad";
   const msg = good ? T("feedbackYes") : (n === -1 ? T("feedbackTime") : T("feedbackNo"));

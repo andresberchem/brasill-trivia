@@ -87,3 +87,9 @@ footer{text-align:center;font-size:1.8rem;padding:10px 16px 40px;letter-spacing:
 @keyframes fall{0%{transform:translate(0,0)}40%{transform:translate(calc(var(--x)*.7),var(--y)) rotate(calc(var(--r)*.5))}100%{transform:translate(var(--x),calc(var(--y) + 520px)) rotate(var(--r));opacity:0}}
 @media(max-width:600px){.panel{padding:28px 18px 22px}.media{height:220px}}
 @media(prefers-reduced-motion:reduce){*,*::before{animation:none!important;transition:none!important}}
+
+/* ===== Ranking como pestaña aparte + foto después de responder ===== */
+.layout-wrapper{max-width:760px;grid-template-columns:1fr}
+@media(min-width:900px){.layout-wrapper{grid-template-columns:1fr}.ranking-column{position:static}}
+.live-ranking-section{max-height:none}
+.media{margin-top:16px;animation:slide .4s}

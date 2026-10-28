@@ -20,7 +20,7 @@
     Brasil Trivia
   </h1>
   <p id="tagline">Test what you know about Brazil</p>
-  <nav class="tabs"><button id="nav-play" class="ghost">🎮 Play</button><button id="nav-admin" class="ghost">🛠️ Admin</button><button id="mute" class="ghost">🔊</button></nav>
+  <nav class="tabs"><button id="nav-play" class="ghost">🎮 Play</button><button id="nav-rank" class="ghost">🏆 Ranking</button><button id="nav-admin" class="ghost">🛠️ Admin</button><button id="mute" class="ghost">🔊</button></nav>
   <div class="wave"></div>
 </header>
 
@@ -94,7 +94,7 @@
       <div class="bar"><span id="prog"></span><span id="tnum"></span><span id="streak"></span><span id="score"></span></div>
       <div class="timer"><div id="tbar"></div></div>
       
-      <div class="media"><img id="img" alt=""><div id="emo"></div></div>
+      
       <h2 id="q"></h2>
       <p id="qtr" class="tr"></p>
       
@@ -110,6 +110,7 @@
       <div class="actions"><button id="say" class="ghost">🔊 Listen</button><button id="fifty" class="ghost">✂️ 50/50</button><button id="plus" class="ghost">⏱️ +10s</button><button id="skip" class="ghost">⏭️ Skip</button></div>
       <div id="opts"></div>
       <div id="fb" class="hidden"></div>
+      <div class="media"><img id="img" alt=""><div id="emo"></div></div>
       <button id="next" class="big hidden">Next</button>
     </section>
 
@@ -132,11 +133,12 @@
       <p id="sub"></p>
       <div id="ach" class="chips"></div>
       <button id="again" class="big">Play again</button>
+      <button id="see-rank" class="ghost" style="margin-top:12px">🏆 Ranking</button>
     </section>
   </div>
 
   <!-- COLUMNA DERECHA: Ranking -->
-  <div class="ranking-column">
+  <div id="rank" class="ranking-column hidden">
     <section class="panel live-ranking-section">
       <h3 id="lbl-rank">🏆 Live ranking</h3>
       <select id="rankfilter"><option value="">🎓 All</option></select>
