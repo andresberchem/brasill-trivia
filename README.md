@@ -58,31 +58,39 @@ brasil-trivia/
 2. **Build → Firestore Database → Create database**. Elige una región cercana.
 3. **Configuración del proyecto (⚙️) → Tus apps → icono Web `</>`** → registra la app → copia el objeto `firebaseConfig`.
 4. Pégalo en `app.js`, en la constante `firebaseConfig` (al inicio del archivo).
-5. En **Firestore → Reglas** pega y publica:
+5. **Authentication → Sign-in method → Email/Password → Enable.** Luego en la pestaña **Users → Add user** crea tu cuenta de administrador (correo y contraseña). **No** crees más usuarios.
+6. En `app.js` cambia `ADMIN_EMAIL` por ese mismo correo.
+7. En **Firestore → Reglas** pega esto (cambia el correo) y pulsa **Publicar**:
 
 ```
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
+    function isAdmin() {
+      return request.auth != null && request.auth.token.email == "TU_CORREO_ADMIN@gmail.com";
+    }
     match /scores/{id} {
       allow read: if true;
-      allow create: if request.resource.data.score is number
+      allow create: if request.resource.data.keys().hasOnly(['name','program','score','hits','total','at'])
                     && request.resource.data.name is string
-                    && request.resource.data.name.size() <= 20;
-      allow update, delete: if true;
+                    && request.resource.data.name.size() > 0 && request.resource.data.name.size() <= 20
+                    && request.resource.data.score is int
+                    && request.resource.data.score >= 0 && request.resource.data.score <= 20000;
+      allow update, delete: if isAdmin();
     }
     match /questions/{id} {
-      allow read, write: if true;
+      allow read: if true;
+      allow write: if isAdmin();
     }
   }
 }
 ```
 
-> ⚠️ El **modo de prueba** de Firestore **expira a los 30 días**: pasado ese tiempo la app deja de leer y escribir. Publica reglas como las de arriba para que siga funcionando.
+> 🔒 Así **cualquiera puede jugar y guardar su puntaje**, pero **solo el administrador** (con su sesión iniciada) puede editar o borrar puntajes y preguntas. La protección real está en estas **reglas**, no en ocultar botones.
 >
-> 🔒 Estas reglas son abiertas a propósito (es un proyecto de aprendizaje). El PIN del panel Admin está visible en `app.js` (`const PIN`), así que es solo un candado básico. Para protegerlo de verdad usa Firebase Authentication y reglas por usuario.
+> ⚠️ Las reglas de prueba de Firestore expiran a los 30 días; las de arriba no expiran.
 >
-> La `apiKey` de Firebase para web **no es un secreto**: la seguridad la dan las reglas de Firestore.
+> La `apiKey` de Firebase para web **no es un secreto**: la seguridad la dan las reglas.
 
 ## 💻 2. Probarlo en tu computador (VS Code)
 

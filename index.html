@@ -122,7 +122,18 @@
     </section>
 
     <section id="admin" class="panel hidden">
+      <div id="a-login">
+        <h3>🔐 Admin login</h3>
+        <div class="form">
+          <input id="a-email" type="email" placeholder="Email" autocomplete="username">
+          <input id="a-pass" type="password" placeholder="Password" autocomplete="current-password">
+          <button id="a-signin" class="big">Sign in</button>
+        </div>
+        <p id="a-msg" class="tr"></p>
+      </div>
+      <div id="a-manager" class="hidden">
       <h3>🛠️ Question manager (Firestore)</h3>
+      <button id="a-logout" class="ghost" style="margin-bottom:12px">🚪 Sign out</button>
       <div class="form">
         <input id="a-q" placeholder="Question (English)"><input id="a-es" placeholder="Pregunta (Español)"><input id="a-pt" placeholder="Pergunta (Português)">
         <textarea id="a-opts" rows="4" placeholder="One option per line: English|Español|Português"></textarea>
@@ -133,6 +144,7 @@
         <button id="a-save" class="big">💾 Save</button><button id="a-cancel" class="ghost hidden">Cancel</button>
       </div>
       <h4 id="a-count"></h4><ul id="a-list"></ul>
+      </div>
     </section>
 
     <section id="end" class="panel hidden">

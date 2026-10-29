@@ -1,6 +1,8 @@
 import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import {getFirestore,collection,addDoc,doc,updateDoc,deleteDoc,query,orderBy,limit,onSnapshot,serverTimestamp}
   from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import {getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged}
+  from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import {QUESTIONS as BASE} from "./questions.js";
 import {EXTRA} from "./questions2.js";
 const QUESTIONS = [...BASE, ...EXTRA];
@@ -15,11 +17,15 @@ const firebaseConfig = {
   appId: "1:237284083241:web:992323a88c4e1135f1fe38"
 };
 
-let db = null;
+// Correo del ÚNICO administrador (debe ser el mismo de las reglas de Firestore)
+const ADMIN_EMAIL = "berchemsantosa@gmail.com";
+
+let db = null, auth = null, isAdmin = false, rerender = () => {};
 try {
   if (!firebaseConfig.apiKey.startsWith("TU_")) {
     const app = initializeApp(firebaseConfig);
     db = getFirestore(app);
+    auth = getAuth(app);
   }
 } catch (e) { console.error("Firebase error:", e); }
 
@@ -306,8 +312,7 @@ const sfx = { ok: () => tone([[523, .12], [659, .12], [784, .22]]), bad: () => t
 $("mute").textContent = muted ? "🔇" : "🔊";
 $("mute").onclick = () => { muted = !muted; localStorage.setItem("mute", muted ? "1" : "0"); $("mute").textContent = muted ? "🔇" : "🔊"; };
 
-const PIN = "sena2026"; let adminOk = false;
-$("nav-admin").onclick = () => { if (!adminOk) { if (prompt("Admin PIN:") !== PIN) return; adminOk = true; } clearInterval(tid); show("admin"); };
+$("nav-admin").onclick = () => { clearInterval(tid); show("admin"); };
 $("nav-play").onclick = () => { clearInterval(tid); show("start"); };
 $("nav-rank").onclick = () => { clearInterval(tid); show("rank"); };
 $("see-rank").onclick = () => show("rank");
@@ -500,7 +505,7 @@ if (db) {
         li.appendChild(textDiv);
 
         // Botones (solo si es tuyo)
-        if (mine.includes(d.id)) {
+        if (isAdmin) { // solo el administrador autenticado ve editar/borrar
           const btnDiv = document.createElement("div");
           btnDiv.style.display = "flex";
           btnDiv.style.gap = "5px";
@@ -527,6 +532,7 @@ if (db) {
   onSnapshot(query(collection(db, "scores"), orderBy("score", "desc"), limit(50)), snap => { lastSnap = snap; renderRank(snap); },
     err => { $("rankmsg").textContent = "Firestore: " + err.message; });
   $("rankfilter").onchange = () => lastSnap && renderRank(lastSnap);
+  rerender = () => lastSnap && renderRank(lastSnap);
 }
 applyUI();
 
@@ -582,3 +588,20 @@ if (db) onSnapshot(collection(db, "questions"), snap => {           // READ en v
     li.append(t, e, x); $("a-list").append(li);
   });
 }, err => console.error(err));
+
+
+/* ===== LOGIN DE ADMIN (Firebase Authentication, correo/contraseña) ===== */
+if (auth) {
+  onAuthStateChanged(auth, u => {
+    isAdmin = !!u && (u.email || "").toLowerCase() === ADMIN_EMAIL.toLowerCase();
+    $("a-login").classList.toggle("hidden", isAdmin);
+    $("a-manager").classList.toggle("hidden", !isAdmin);
+    rerender();
+  });
+  $("a-signin").onclick = async () => {
+    $("a-msg").textContent = "";
+    try { await signInWithEmailAndPassword(auth, $("a-email").value.trim(), $("a-pass").value); $("a-pass").value = ""; }
+    catch (e) { $("a-msg").textContent = "❌ " + (e.code || e.message); }
+  };
+  $("a-logout").onclick = () => signOut(auth);
+}
