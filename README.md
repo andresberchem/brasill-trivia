@@ -68,6 +68,8 @@ service cloud.firestore {
   match /databases/{database}/documents {
     function isAdmin() {
       return request.auth != null && request.auth.token.email == "TU_CORREO_ADMIN@gmail.com";
+
+  
     }
     match /scores/{id} {
       allow read: if true;
